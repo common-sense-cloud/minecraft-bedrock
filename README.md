@@ -24,6 +24,7 @@
 - Add autoshutdown scripts
 - Add server automated backups
 - Migrate to K8s/GKE ($$$$)
+- Migrate state from local to GCS
 
 
 ## Contributing:
