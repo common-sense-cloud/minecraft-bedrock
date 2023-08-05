@@ -16,7 +16,7 @@
 - Open minecraft bedrock and join the LAN server with the GCE VMs public IP address
 
 ## Action Items:
-- Fix add-user.js function to pull ipv4 address, this may require refactoring to python
+- ~~Fix add-user.js function to pull ipv4 address, this may require refactoring to python~~
 - Add Firewall rule cleanup step to stop-server function
 - Add new VPC network and subnets/firewall rules to terraform code, so it's not running in default network
 - Add monitoring/logging
