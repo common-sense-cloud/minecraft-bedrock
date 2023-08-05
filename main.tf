@@ -5,6 +5,11 @@ provider "google" {
   zone        = var.zone
 }
 
+data "archive_file" "gcfzip" {
+  type        = "zip"
+  output_path = "add-user.zip"
+  source_dir  = "${path.module}/functions/add-user/"
+}
 
 module "mc-server" {
   source          = "./modules/gce-container"
@@ -54,8 +59,9 @@ module "add-function" {
   source               = "./modules/cloud-function"
   bucket-name          = "${var.project_id}-functions"
   object-name          = "add-user.zip"
-  function-path        = "./functions/add-user/add-user.zip"
+  function-path        = data.archive_file.gcfzip.output_path
   function-name        = "add-user"
-  function-description = "javascript function that adds a user to minecraft server"
-  entry-point          = "makeFWRule"
+  function-description = "python function that adds a user to minecraft server"
+  entry-point          = "insert_fwRule"
+  runtime              = "python39"
 }
