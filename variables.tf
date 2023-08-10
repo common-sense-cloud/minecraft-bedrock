@@ -17,3 +17,8 @@ variable "service-account" {
   type    = string
   default = "terraform@terraform-basics-12.iam.gserviceaccount.com"
 }
+
+variable "client_email" {
+  type    = string
+  default = "service-167850191019@compute-system.iam.gserviceaccount.com"
+}
