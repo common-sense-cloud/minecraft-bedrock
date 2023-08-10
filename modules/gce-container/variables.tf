@@ -62,3 +62,12 @@ variable "client_email" {
 variable "port" {
   type = number
 }
+
+variable "service_account" {
+  type    = string
+  default = null
+}
+
+variable "resource_policy" {
+  default = ""
+}

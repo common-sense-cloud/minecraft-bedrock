@@ -66,6 +66,9 @@ resource "google_compute_instance" "vm" {
     access_config {}
   }
 
+  resource_policies = var.resource_policy
+
+
   tags = ["minecraft-server"]
 
   metadata = {
@@ -79,9 +82,10 @@ resource "google_compute_instance" "vm" {
   }
 
   service_account {
-    email = var.client_email
+    email = var.service_account
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
+
 }

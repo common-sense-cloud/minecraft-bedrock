@@ -11,6 +11,32 @@ data "archive_file" "gcfzip" {
   source_dir  = "${path.module}/functions/add-user/"
 }
 
+resource "google_compute_resource_policy" "stop-start-schedule" {
+  name   = "stopschedule"
+  region = var.region
+
+  instance_schedule_policy {
+    vm_start_schedule {
+      schedule = "0 16 * * *"
+    }
+    vm_stop_schedule {
+      schedule = "0 0 * * *"
+    }
+    time_zone = "US/Mountain"
+  }
+}
+
+resource "google_compute_instance_iam_binding" "schedule_binding" {
+  project       = var.project_id
+  zone          = var.zone
+  instance_name = "mc-server-v1"
+
+  role = "roles/compute.instanceAdmin"
+  members = [
+    "serviceAccount:${var.client_email}"
+  ]
+}
+
 module "mc-server" {
   source          = "./modules/gce-container"
   zone            = var.zone
@@ -19,6 +45,8 @@ module "mc-server" {
   privileged_mode = true
   activate_tty    = true
   port            = 19132
+
+  resource_policy = [google_compute_resource_policy.stop-start-schedule.id]
 
   env_variables = {
     EULA : "TRUE"
@@ -32,6 +60,7 @@ module "mc-server" {
   subnetwork         = "default"
   subnetwork_project = "terraform-basics-12"
 
+  depends_on = [google_compute_instance_iam_binding.schedule_binding]
 }
 
 module "start-function" {

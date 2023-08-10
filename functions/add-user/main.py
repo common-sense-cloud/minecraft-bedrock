@@ -4,10 +4,13 @@ from botocore.exceptions import ClientError
 from google.cloud import compute_v1
 from googleapiclient import discovery
 import socket
+from datetime import datetime
 
+now = datetime.now()
+dt_string = now.strftime("%d-%m-%Y-%H%M%S")
 
 instance_name = "mc-server-v1"
-fw_name = 'minecraft-fw-rule-guest'
+fw_name = 'minecraft-fw-rule-{}'.format(dt_string)
 project = "terraform-basics-12"
 zone = "us-east1-b"
 
@@ -18,7 +21,7 @@ def get_server_ip():
         project = project,
         zone = zone
     )
-    
+   
     response = client.get(request=request)
     server_ip = response.network_interfaces[0].access_configs[0].nat_i_p
     return server_ip
@@ -46,13 +49,12 @@ def insert_fwRule(request):
         
     }
     try:
-        request = compute_v1.PatchFirewallRequest(
+        request = compute_v1.InsertFirewallRequest(
             project=project,
             firewall_resource = firewall_body,
-            firewall = fw_name
         )
         
-        response = client.patch(request=request)
+        response = client.insert(request=request)
         print(response)
     except ClientError as e:
         print(e)
